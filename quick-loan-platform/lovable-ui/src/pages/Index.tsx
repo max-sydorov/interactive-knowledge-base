@@ -10,7 +10,7 @@ const Index: React.FC = () => {
         <div className="container max-w-6xl mx-auto px-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold">Quick Loan Gateway</h1>
+              <h1 className="text-2xl md:text-3xl font-bold">Quick Loan</h1>
               <p className="text-primary-foreground/90 text-sm md:text-base">
                 Small Business Loan Application
               </p>
@@ -36,7 +36,7 @@ const Index: React.FC = () => {
       <footer className="bg-muted py-6">
         <div className="container max-w-6xl mx-auto px-4 text-center text-sm text-muted-foreground">
           <p className="mb-2">
-            &copy; {new Date().getFullYear()} Quick Loan Gateway. All rights reserved.
+            &copy; {new Date().getFullYear()} Quick Loan. All rights reserved.
           </p>
           <p>
             <a href="#" className="text-primary hover:underline mx-2">Privacy Policy</a>
