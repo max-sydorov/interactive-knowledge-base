@@ -1,4 +1,105 @@
+import { Applicant, Business, LoanDetails, LoanApplication } from './interfaces'; // Assuming interfaces are in a separate file now
 
+// Define the backend API base URL
+const API_BASE_URL = 'http://localhost:8080/api'; // Adjust port if needed
+
+// Define the structure of the submission response from the backend
+interface SubmissionResponse {
+  applicationId: string; // The backend returns UUID as string
+}
+
+// Updated ApiService class using fetch
+class ApiService {
+
+  // Submit an application to the real backend
+  async submitApplication(application: Omit<LoanApplication, 'id' | 'status' | 'submittedAt'>): Promise<{ applicationId: string }> {
+    console.log('Submitting application to backend:', application);
+    try {
+      const response = await fetch(`${API_BASE_URL}/applications`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // Add any other headers like Authorization if needed
+        },
+        body: JSON.stringify(application), // Send the core application data
+      });
+
+      if (!response.ok) {
+        // Attempt to read error details from backend response
+        let errorData = null;
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          // Ignore if response body is not JSON
+        }
+        console.error('Backend submission error:', response.status, response.statusText, errorData);
+        throw new Error(`Failed to submit application: ${response.statusText}${errorData ? ' - ' + JSON.stringify(errorData.message || errorData) : ''}`);
+      }
+
+      const result: SubmissionResponse = await response.json();
+      console.log('Submission successful, Application ID:', result.applicationId);
+      // Ensure the returned object matches the expected { applicationId: string } structure
+      return { applicationId: result.applicationId };
+
+    } catch (error) {
+      console.error('Network error submitting application:', error);
+      // Re-throw the error so the calling component can handle it
+      throw error;
+    }
+  }
+
+  // Retrieve an application by ID from the real backend
+  async getApplication(applicationId: string): Promise<LoanApplication | null> {
+    console.log('Fetching application from backend, ID:', applicationId);
+    if (!applicationId) {
+       console.warn('getApplication called with invalid ID');
+       return null;
+    }
+    try {
+      const response = await fetch(`${API_BASE_URL}/applications/${applicationId}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          // Add any other headers if needed
+        },
+      });
+
+      if (response.ok) {
+        const application: LoanApplication = await response.json();
+        console.log('Application fetched successfully:', application);
+        // Convert submittedAt string to Date object if needed by frontend components
+        if (application.submittedAt) {
+           // Backend sends OffsetDateTime (e.g., "2023-10-27T10:15:30+01:00")
+           // JavaScript Date can parse this directly
+           application.submittedAt = new Date(application.submittedAt).toISOString();
+        }
+        return application;
+      } else if (response.status === 404) {
+        console.log('Application not found (404)');
+        return null; // Application not found is not necessarily an error in all contexts
+      } else {
+         // Handle other non-OK statuses as errors
+        console.error('Backend fetch error:', response.status, response.statusText);
+        throw new Error(`Failed to fetch application: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error('Network error fetching application:', error);
+      // Re-throw or return null based on how you want to handle fetch errors
+       throw error; // Or return null;
+    }
+  }
+}
+
+// Export interfaces and the service instance
+export * from './interfaces'; // Re-export interfaces if they are moved
+export const apiService = new ApiService();
+
+// --- It's often better to put interfaces in their own file (e.g., interfaces.ts) ---
+// --- If you do, create interfaces.ts with the Applicant, Business, etc. interfaces ---
+// --- and import them here: import { Applicant, Business, LoanDetails, LoanApplication } from './interfaces'; ---
+// --- Then export them again: export * from './interfaces'; ---
+
+// For completeness, include interfaces here if not moved:
 export interface Applicant {
   firstName: string;
   lastName: string;
@@ -24,71 +125,15 @@ export interface Business {
 }
 
 export interface LoanDetails {
-  amount: number;
+  amount: number; // Frontend might use number, backend uses BigDecimal
   purpose: string;
 }
 
 export interface LoanApplication {
-  id?: string;
+  id?: string; // Changed to string to match UUID from backend
   applicant: Applicant;
   business: Business;
   loanDetails: LoanDetails;
-  status?: 'PENDING' | 'APPROVED' | 'DECLINED' | 'NEEDS_REVIEW';
-  submittedAt?: string;
+  status?: 'PENDING' | 'APPROVED' | 'DECLINED' | 'NEEDS_REVIEW'; // Ensure this matches backend LoanStatus Enum
+  submittedAt?: string; // Backend sends string (ISO format), keep as string or convert to Date
 }
-
-// This is a mock API service for demo purposes
-// In a real application, this would make actual HTTP requests to your backend
-class ApiService {
-  private applications: LoanApplication[] = [];
-  
-  // Simulate submitting an application to the backend
-  async submitApplication(application: LoanApplication): Promise<{ applicationId: string }> {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // Generate a fake application ID
-    const applicationId = Math.random().toString(36).substring(2, 15);
-    
-    // Add timestamp
-    const submittedAt = new Date().toISOString();
-    
-    // Determine status based on simple rules
-    let status: 'PENDING' | 'APPROVED' | 'DECLINED' | 'NEEDS_REVIEW';
-    const revenue = application.business.annualRevenue;
-    const yearsInOperation = application.business.yearsInOperation;
-    const loanAmount = application.loanDetails.amount;
-    
-    if (revenue < 50000 || yearsInOperation < 1) {
-      status = 'DECLINED';
-    } else if (revenue >= 200000 && yearsInOperation >= 3 && loanAmount <= revenue * 0.5) {
-      status = 'APPROVED';
-    } else {
-      status = 'NEEDS_REVIEW';
-    }
-    
-    // Store the application with the generated ID and status
-    this.applications.push({
-      ...application,
-      id: applicationId,
-      status,
-      submittedAt
-    });
-    
-    // Return the application ID
-    return { applicationId };
-  }
-  
-  // Simulate retrieving an application by ID
-  async getApplication(applicationId: string): Promise<LoanApplication | null> {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Find the application
-    const application = this.applications.find(app => app.id === applicationId);
-    
-    return application || null;
-  }
-}
-
-export const apiService = new ApiService();
