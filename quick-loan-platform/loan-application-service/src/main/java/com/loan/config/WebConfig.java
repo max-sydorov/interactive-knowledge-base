@@ -1,4 +1,4 @@
-package com.yourcompany.loanapplication.config;
+package com.loan.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

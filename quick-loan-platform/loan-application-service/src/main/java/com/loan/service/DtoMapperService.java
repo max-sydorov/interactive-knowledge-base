@@ -1,9 +1,9 @@
-package com.yourcompany.loanapplication.service;
+package com.loan.service;
 
-import com.yourcompany.loanapplication.model.dto.*;
-import com.yourcompany.loanapplication.model.entity.Applicant;
-import com.yourcompany.loanapplication.model.entity.Business;
-import com.yourcompany.loanapplication.model.entity.LoanApplication;
+import com.loan.model.dto.*;
+import com.loan.model.entity.Applicant;
+import com.loan.model.entity.Business;
+import com.loan.model.entity.LoanApplication;
 import org.springframework.stereotype.Service;
 
 @Service

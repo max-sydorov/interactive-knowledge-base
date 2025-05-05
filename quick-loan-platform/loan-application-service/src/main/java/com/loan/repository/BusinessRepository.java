@@ -1,6 +1,6 @@
-package com.yourcompany.loanapplication.repository;
+package com.loan.repository;
 
-import com.yourcompany.loanapplication.model.entity.Business;
+import com.loan.model.entity.Business;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 

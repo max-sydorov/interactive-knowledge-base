@@ -1,13 +1,13 @@
-package com.yourcompany.loanapplication.service;
+package com.loan.service;
 
-import com.yourcompany.loanapplication.model.dto.*;
-import com.yourcompany.loanapplication.model.entity.Applicant;
-import com.yourcompany.loanapplication.model.entity.Business;
-import com.yourcompany.loanapplication.model.entity.LoanApplication;
-import com.yourcompany.loanapplication.model.entity.LoanStatus;
-import com.yourcompany.loanapplication.repository.ApplicantRepository;
-import com.yourcompany.loanapplication.repository.BusinessRepository;
-import com.yourcompany.loanapplication.repository.LoanApplicationRepository;
+import com.loan.model.dto.*;
+import com.loan.model.entity.Applicant;
+import com.loan.model.entity.Business;
+import com.loan.model.entity.LoanApplication;
+import com.loan.model.entity.LoanStatus;
+import com.loan.repository.ApplicantRepository;
+import com.loan.repository.BusinessRepository;
+import com.loan.repository.LoanApplicationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor; // Lombok for constructor injection
 import org.springframework.stereotype.Service;

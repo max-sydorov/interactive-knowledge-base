@@ -1,4 +1,4 @@
-package com.yourcompany.loanapplication.model.dto;
+package com.loan.model.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
