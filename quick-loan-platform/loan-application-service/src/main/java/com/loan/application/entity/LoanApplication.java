@@ -35,8 +35,8 @@ public class LoanApplication {
     @Column(name = "loan_purpose", columnDefinition = "TEXT")
     private String loanPurpose;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20) // Ensure length matches ENUM values
+    @Enumerated(EnumType.STRING) // This tells Hibernate to store the enum's name as a string
+    @Column(name = "status", nullable = false, length = 20) // Remove columnDefinition specific to PG enum, ensure length matches DB
     private LoanStatus status;
 
     @CreationTimestamp // Or set manually in service layer before save
