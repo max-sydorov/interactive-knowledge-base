@@ -1,4 +1,4 @@
-package com.loan.model.dto;
+package com.loan.application.model;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

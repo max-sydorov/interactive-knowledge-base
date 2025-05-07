@@ -1,6 +1,6 @@
-package com.loan.model.dto;
+package com.loan.application.model;
 
-import com.loan.model.entity.LoanStatus; // Use the enum
+import com.loan.application.entity.LoanStatus; // Use the enum
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

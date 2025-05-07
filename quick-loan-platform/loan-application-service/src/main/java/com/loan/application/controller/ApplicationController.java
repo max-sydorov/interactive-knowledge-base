@@ -1,8 +1,8 @@
-package com.loan.controller;
+package com.loan.application.controller;
 
-import com.loan.model.dto.LoanApplicationDTO;
-import com.loan.model.dto.SubmissionResponseDTO;
-import com.loan.service.ApplicationService;
+import com.loan.application.model.LoanApplicationDTO;
+import com.loan.application.model.SubmissionResponseDTO;
+import com.loan.application.service.ApplicationService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

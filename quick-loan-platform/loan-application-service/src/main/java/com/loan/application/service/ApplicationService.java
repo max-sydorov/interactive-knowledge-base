@@ -1,13 +1,14 @@
-package com.loan.service;
+package com.loan.application.service;
 
-import com.loan.model.dto.*;
-import com.loan.model.entity.Applicant;
-import com.loan.model.entity.Business;
-import com.loan.model.entity.LoanApplication;
-import com.loan.model.entity.LoanStatus;
-import com.loan.repository.ApplicantRepository;
-import com.loan.repository.BusinessRepository;
-import com.loan.repository.LoanApplicationRepository;
+import com.loan.application.model.LoanApplicationDTO;
+import com.loan.application.model.SubmissionResponseDTO;
+import com.loan.application.entity.Applicant;
+import com.loan.application.entity.Business;
+import com.loan.application.entity.LoanApplication;
+import com.loan.application.entity.LoanStatus;
+import com.loan.application.repository.ApplicantRepository;
+import com.loan.application.repository.BusinessRepository;
+import com.loan.application.repository.LoanApplicationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor; // Lombok for constructor injection
 import org.springframework.stereotype.Service;
@@ -15,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional; // For DB trans
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

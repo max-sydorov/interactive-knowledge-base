@@ -1,6 +1,6 @@
-package com.loan.repository;
+package com.loan.application.repository;
 
-import com.loan.model.entity.LoanApplication;
+import com.loan.application.entity.LoanApplication;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

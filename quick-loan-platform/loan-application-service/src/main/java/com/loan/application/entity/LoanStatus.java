@@ -1,4 +1,4 @@
-package com.loan.model.entity;
+package com.loan.application.entity;
 
 public enum LoanStatus {
     PENDING,
