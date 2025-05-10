@@ -12,7 +12,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 
-MODEL = "gpt-4o-mini"
+MODEL = "gpt-3.5-turbo"
 
 # Load environment variables from .env file
 load_dotenv()
@@ -75,21 +75,14 @@ def create_vector_store(chunks: List[Document]) -> Chroma:
     """
     # Initialize the embeddings model
     # Use specific parameters to avoid proxies validation error
-    embeddings = OpenAIEmbeddings(
-        model="text-embedding-ada-002",
-        openai_api_key=os.environ.get("OPENAI_API_KEY")
-    )
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
 
     # Delete if already exists
     if os.path.exists(VECTOR_STORE_DIR):
         Chroma(persist_directory=VECTOR_STORE_DIR, embedding_function=embeddings).delete_collection()
 
     # Create the vector store
-    vector_store = Chroma.from_documents(
-        documents=chunks,
-        embedding=embeddings,
-        persist_directory=VECTOR_STORE_DIR
-    )
+    vector_store = Chroma.from_documents(documents=chunks, embedding=embeddings, persist_directory=VECTOR_STORE_DIR)
 
     # Persist the vector store to disk
     vector_store.persist()
@@ -103,15 +96,13 @@ def create_rag_chain(vector_store: Chroma):
     """
     # Initialize the retriever
     retriever = vector_store.as_retriever(
-        search_type="similarity",
         search_kwargs={"k": 5}
     )
 
     # Initialize the LLM
     llm = ChatOpenAI(
-        model_name="gpt-3.5-turbo", 
-        temperature=0,
-        openai_api_key=os.environ.get("OPENAI_API_KEY")
+        model_name=MODEL,
+        temperature=0
     )
 
     # Create the prompt template
