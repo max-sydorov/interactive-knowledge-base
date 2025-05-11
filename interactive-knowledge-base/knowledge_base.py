@@ -139,16 +139,23 @@ def main():
     """
     Main function to initialize the knowledge base and provide a simple CLI.
     """
-    print("Loading Java documents from quick-loan-platform...")
-    java_documents = load_documents(
-        "../quick-loan-platform/loan-application-service/src/main/java",
-        [".java"])
 
     print("Loading markdown documents from quick-loan-platform...")
     md_documents = load_documents(
         "../quick-loan-platform/docs",
         [".md"]
     )
+
+    print("Loading sql documents from quick-loan-platform...")
+    md_documents = load_documents(
+        "../quick-loan-platform/db",
+        [".sql"]
+    )
+
+    print("Loading Java documents from quick-loan-platform...")
+    java_documents = load_documents(
+        "../quick-loan-platform/loan-application-service/src/main/java",
+        [".java"])
 
     # Combine documents from both sources
     documents = java_documents + md_documents
