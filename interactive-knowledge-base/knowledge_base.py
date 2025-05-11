@@ -12,35 +12,35 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 
-MODEL = "gpt-3.5-turbo"
-
 # Load environment variables from .env file
 load_dotenv()
-
-# Define the base directory for the quick-loan-platform
-BASE_DIR = Path(__file__).parent.parent / "quick-loan-platform"
 
 # Define the vector store parent directory
 VECTOR_STORE_DIR = str(Path(__file__).parent / "chroma_db")
 
-# Define the file extensions to process
-#FILE_EXTENSIONS = [".md", ".sql", ".java", ".tsx"]
-FILE_EXTENSIONS = [".java"]
+MODEL = "gpt-3.5-turbo"
 
-def load_documents() -> List[Document]:
+def load_documents(base_dir: Path, file_extensions: List[str]) -> List[Document]:
     """
-    Load documents from the quick-loan-platform directory with specified extensions.
+    Load documents from the specified directory with specified extensions.
+
+    Args:
+        base_dir: The base directory to load documents from
+        file_extensions: List of file extensions to process (e.g., [".java", ".md"])
+
+    Returns:
+        List of loaded documents
     """
     documents = []
 
     # Define loaders for each file extension
-    for ext in FILE_EXTENSIONS:
+    for ext in file_extensions:
         # Skip the extension's leading dot for the glob pattern
         glob_pattern = f"**/*{ext}"
 
         # Create a loader for the current extension
         loader = DirectoryLoader(
-            str(BASE_DIR),
+            str(base_dir),
             glob=glob_pattern,
             loader_cls=TextLoader,
             show_progress=True,
@@ -139,8 +139,20 @@ def main():
     """
     Main function to initialize the knowledge base and provide a simple CLI.
     """
-    print("Loading documents from quick-loan-platform...")
-    documents = load_documents()
+    print("Loading Java documents from quick-loan-platform...")
+    java_documents = load_documents(
+        "../quick-loan-platform/loan-application-service/src/main/java",
+        [".java"])
+
+    print("Loading markdown documents from quick-loan-platform...")
+    md_documents = load_documents(
+        "../quick-loan-platform/docs",
+        [".md"]
+    )
+
+    # Combine documents from both sources
+    documents = java_documents + md_documents
+    print(f"Combined {len(java_documents)} Java documents and {len(md_documents)} markdown documents.")
 
     # print("Chunking documents...")
     # chunks = chunk_documents(documents)
