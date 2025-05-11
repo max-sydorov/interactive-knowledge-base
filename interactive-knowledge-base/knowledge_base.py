@@ -147,7 +147,7 @@ def main():
     )
 
     print("Loading sql documents from quick-loan-platform...")
-    md_documents = load_documents(
+    sql_documents = load_documents(
         "../quick-loan-platform/db",
         [".sql"]
     )
@@ -158,8 +158,8 @@ def main():
         [".java"])
 
     # Combine documents from both sources
-    documents = java_documents + md_documents
-    print(f"Combined {len(java_documents)} Java documents and {len(md_documents)} markdown documents.")
+    documents = md_documents + sql_documents + java_documents
+    print(f"Combined {len(documents)} documents.")
 
     # print("Chunking documents...")
     # chunks = chunk_documents(documents)
