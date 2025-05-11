@@ -96,7 +96,7 @@ def create_rag_chain(vector_store: Chroma):
     """
     # Initialize the retriever
     retriever = vector_store.as_retriever(
-        search_kwargs={"k": 25}
+        search_kwargs={"k": 18}
     )
 
     # Initialize the LLM
@@ -157,8 +157,13 @@ def main():
         "../quick-loan-platform/loan-application-service/src/main/java",
         [".java"])
 
+    print("Loading TypeScript documents from quick-loan-platform...")
+    tsx_documents = load_documents(
+        "../quick-loan-platform/lovable-ui/src",
+        [".tsx"])
+
     # Combine documents from both sources
-    documents = md_documents + sql_documents + java_documents
+    documents = md_documents + sql_documents + java_documents + tsx_documents
     print(f"Combined {len(documents)} documents.")
 
     # print("Chunking documents...")
