@@ -97,10 +97,12 @@ if __name__ == "__main__":
 
     # Example questions
     questions = [
-        "What tables do we have in the database?",
-        "What fields do we have in an application?",
+        "How to submit an application? Where to find the status of an application?",
+        "Where do we persist application data?",
         "How are loan applications related to applicants?",
         "Can a business have multiple loan applications?",
+        "How to submit an application? Where to find the status of an application?",
+        "Where do we persist application data?",
         "Generate sql query to get application status by user email",
     ]
 
@@ -108,4 +110,4 @@ if __name__ == "__main__":
     for question in questions:
         print(f"Question: {question}")
         print(f"Answer: {agent.query(question)}")
-        print("-" * 50)
+        print("-" * 100)

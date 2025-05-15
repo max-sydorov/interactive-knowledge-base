@@ -1,21 +1,24 @@
-Question: What tables do we have in the database?
-Answer: The database contains the following tables:
-1. applicants
-2. businesses
-3. loan_applications
---------------------------------------------------
-Question: What fields do we have in an application?
-Answer: The fields in an application are: id, applicant_id, business_id, loan_amount, loan_purpose, status, and submitted_at.
---------------------------------------------------
+Question: How to submit an application? Where to find the status of an application?
+Answer: The schema does not provide information on how to submit an application as it only defines the structure of the database. However, the status of an application can be found in the 'status' column of the 'loan_applications' table.
+----------------------------------------------------------------------------------------------------
+Question: Where do we persist application data?
+Answer: Application data is persisted in the "loan_applications" table.
+----------------------------------------------------------------------------------------------------
 Question: How are loan applications related to applicants?
 Answer: Loan applications are related to applicants through the 'applicant_id' field in the 'loan_applications' table. This field is a foreign key that references the 'id' field in the 'applicants' table. This means that each loan application is associated with one applicant.
---------------------------------------------------
+----------------------------------------------------------------------------------------------------
 Question: Can a business have multiple loan applications?
-Answer: Yes, a business can have multiple loan applications. The schema does not restrict a business to only one loan application. The business_id in the loan_applications table is a foreign key referencing the id in the businesses table, but there is no unique constraint on the business_id in the loan_applications table, which means multiple rows (i.e., multiple loan applications) can have the same business_id.
---------------------------------------------------
+Answer: Yes, a business can have multiple loan applications. The schema does not restrict a business from having multiple entries in the loan_applications table.
+----------------------------------------------------------------------------------------------------
+Question: How to submit an application? Where to find the status of an application?
+Answer: The schema does not provide information on how to submit an application. It only defines the structure of the database. The status of an application can be found in the 'status' column of the 'loan_applications' table.
+----------------------------------------------------------------------------------------------------
+Question: Where do we persist application data?
+Answer: Application data is persisted in the "loan_applications" table.
+----------------------------------------------------------------------------------------------------
 Question: Generate sql query to get application status by user email
 Answer: SELECT loan_applications.status
 FROM loan_applications
 JOIN applicants ON loan_applications.applicant_id = applicants.id
 WHERE applicants.email = 'user_email';
---------------------------------------------------
+----------------------------------------------------------------------------------------------------
