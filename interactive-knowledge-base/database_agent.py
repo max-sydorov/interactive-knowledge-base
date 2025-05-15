@@ -1,9 +1,3 @@
-"""
-Database Agent for answering questions about the database schema.
-This agent uses LangChain and OpenAI to provide answers based on the schema.sql file.
-"""
-
-import os
 from pathlib import Path
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
@@ -13,31 +7,24 @@ from langchain_core.runnables import RunnablePassthrough
 # Load environment variables
 load_dotenv()
 
+MODEL = "gpt-4-turbo"
+TEMPERATURE = 0
+SCHEMA_PATH = Path(__file__).parent / "schema.sql"
+
+"""
+Database Agent for answering questions about the database schema.
+This agent uses LangChain and OpenAI to provide answers based on the schema file.
+"""
 class DatabaseAgent:
-    """
-    Agent that answers questions about the database schema using LangChain and LLM.
-    """
 
-    def __init__(self, schema_path=None):
-        """
-        Initialize the DatabaseAgent with the schema file.
-
-        Args:
-            schema_path (str, optional): Path to the schema.sql file. 
-                                        If None, uses the default schema.sql in the same directory.
-        """
-        # Set default schema path if not provided
-        if schema_path is None:
-            current_dir = Path(__file__).parent
-            schema_path = current_dir / "schema.sql"
-
+    def __init__(self):
         # Load the schema
-        self.schema = self._load_schema(schema_path)
+        self.schema = self._load_schema(SCHEMA_PATH)
 
         # Initialize the LLM
         self.llm = ChatOpenAI(
-            model="gpt-4",
-            temperature=0,
+            model=MODEL,
+            temperature=TEMPERATURE,
         )
 
         # Create the prompt template
@@ -65,15 +52,6 @@ class DatabaseAgent:
         )
 
     def _load_schema(self, schema_path):
-        """
-        Load the schema from the file.
-
-        Args:
-            schema_path (str or Path): Path to the schema file.
-
-        Returns:
-            str: The content of the schema file.
-        """
         with open(schema_path, 'r') as f:
             return f.read()
 
