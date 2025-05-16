@@ -43,13 +43,20 @@ class KnowledgeBaseAgent:
         # Create the system message with the system overview directly included
         system_message = f"""
         You are a knowledge base assistant for the Quick Loan Platform. Your task is to answer questions about the platform
-        based on the system overview provided below. If the question is related to the database schema, tables, fields, or SQL queries,
-        use the query_database tool to get the answer.
+        based on the system overview provided below.
 
         {self.system_overview}
 
-        Answer the question based on the system overview. If you don't know the answer, say so.
-        If the question is about database schema, tables, fields, or SQL queries, use the query_database tool.
+        When answering questions:
+        1. First, try to answer using ONLY the system overview.
+        2. If the system overview does not provide a sufficiently detailed or definitive answer, AND the question pertains to:
+            a. Database schema, tables, or fields.
+            b. Specific data values, counts, or existence of records (e.g., "How many active loans?", "Does customer X have a loan?", "Can a business have multiple loan applications?").
+            c. How different pieces of information are linked or structured within the system.
+            d. SQL queries.
+           Then, you MUST use the `query_database` tool to find the answer.
+        3. Provide the answer based on the information retrieved. Do not speculate if the database can provide a factual answer.
+        4. If, after consulting the overview and attempting to use the `query_database` tool (if applicable), you still don't know the answer, say so.
         """
 
         # Create the prompt template with the system message and user input
@@ -90,7 +97,7 @@ class KnowledgeBaseAgent:
 
 if __name__ == "__main__":
     # Example usage
-    agent = KnowledgeBaseAgent(verbose = True)
+    agent = KnowledgeBaseAgent(verbose = False)
 
     # Example questions
     questions = [
