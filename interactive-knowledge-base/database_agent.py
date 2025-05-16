@@ -22,10 +22,7 @@ class DatabaseAgent:
         self.schema = self._load_schema(SCHEMA_PATH)
 
         # Initialize the LLM
-        self.llm = ChatOpenAI(
-            model=MODEL,
-            temperature=TEMPERATURE,
-        )
+        self.llm = ChatOpenAI(model=MODEL, temperature=TEMPERATURE)
 
         # Create the prompt template
         self.prompt = PromptTemplate(
@@ -56,15 +53,6 @@ class DatabaseAgent:
             return f.read()
 
     def query(self, question):
-        """
-        Query the agent with a question about the database.
-
-        Args:
-            question (str): The question to ask about the database.
-
-        Returns:
-            str: The answer from the LLM.
-        """
         response = self.chain.invoke(question)
         return response.content
 
