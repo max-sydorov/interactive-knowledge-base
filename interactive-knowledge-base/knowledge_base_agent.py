@@ -1,9 +1,7 @@
 from pathlib import Path
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
-from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnablePassthrough
 from langchain.agents import tool
 from langchain.agents import AgentExecutor, create_openai_tools_agent
 from database_agent import DatabaseAgent
@@ -46,7 +44,6 @@ class KnowledgeBaseAgent:
         based on the system overview provided below. If the question is related to the database schema, tables, fields, or SQL queries,
         use the query_database tool to get the answer.
 
-        System Overview:
         {self.system_overview}
 
         Answer the question based on the system overview. If you don't know the answer, say so.
@@ -98,8 +95,9 @@ if __name__ == "__main__":
         "What is the Quick Loan Platform?",
         "How does the application process work?",
         "What tables do we have in the database?",
-        "What fields do we have in an application?",
         "Can a business have multiple loan applications?",
+        "How to submit an application? Where to find the status of an application?",
+        "Generate sql query to get application status by user email",
     ]
 
     # Print answers to example questions

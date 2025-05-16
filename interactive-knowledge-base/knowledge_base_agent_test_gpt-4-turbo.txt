@@ -1,0 +1,80 @@
+Question: What is the Quick Loan Platform?
+Answer: The Quick Loan Platform is an online platform designed specifically for small business loan application intake. It provides a streamlined web-based interface where small businesses can fill out and submit loan applications. The platform is built using a three-tier architecture:
+
+1. **Presentation Tier (Frontend):** This is a ReactJS single-page application (SPA) that runs in the user's browser. It is responsible for rendering the user interface, capturing user input, performing client-side validation, and communicating with the backend API.
+
+2. **Application Tier (Backend):** This tier is powered by Java Spring Boot and provides a RESTful API. It handles requests, performs server-side validation, executes business logic including loan decisioning, and interacts with the data persistence layer.
+
+3. **Data Tier (Persistence):** The platform uses a PostgreSQL relational database to store and retrieve application details and decision outcomes.
+
+The workflow of the platform involves the user filling out a multi-step form on the frontend, which is then validated and submitted to the backend. The backend validates the data, persists it, runs decisioning logic, and stores the decision and application status. The frontend then polls or queries for updates on the application status.
+----------------------------------------------------------------------------------------------------
+Question: How does the application process work?
+Answer: The application process on the Quick Loan platform involves several steps:
+
+1. **User Interaction with the Frontend:**
+   - Users access the platform through a web-based interface built with ReactJS.
+   - They fill out a multi-step form designed to collect all necessary information for a small business loan application.
+
+2. **Data Validation and Submission:**
+   - As users input their data, client-side validation is performed by the frontend to ensure that all required fields are filled out correctly.
+   - Once the form is complete and validated, the data is submitted to the backend API.
+
+3. **Backend Processing:**
+   - The backend, developed with Java Spring Boot, receives the application data.
+   - It performs additional server-side validation to ensure data integrity and compliance with business rules.
+   - The data is then persisted in a PostgreSQL database.
+   - The backend also executes decisioning logic to determine the eligibility of the application for a loan.
+
+4. **Decision Storage and Communication:**
+   - The decision outcome and the application status are stored in the database.
+   - The frontend periodically polls or queries the backend to retrieve updates on the application status.
+
+5. **User Notification:**
+   - Once a decision is made, the user is notified through the frontend interface about the status of their loan application, whether it has been approved, denied, or requires further information.
+
+This streamlined process ensures that the application is handled efficiently and the user is kept informed throughout.
+----------------------------------------------------------------------------------------------------
+Question: What tables do we have in the database?
+Answer: The database contains the following tables:
+1. `applicants`
+2. `businesses`
+3. `loan_applications`
+----------------------------------------------------------------------------------------------------
+Question: Can a business have multiple loan applications?
+Answer: The system overview does not explicitly state whether a business can have multiple loan applications. However, given that it is a platform for small business loan applications, it is reasonable to assume that businesses might apply for multiple loans over time, especially if they have varying financial needs or projects. If you need a definitive answer or details on how multiple applications per business are handled in the database, I would need to check the database schema or related documentation.
+----------------------------------------------------------------------------------------------------
+Question: How to submit an application? Where to find the status of an application?
+Answer: To submit a small business loan application on the Quick Loan Platform, follow these steps:
+
+1. **Fill Out the Application Form:**
+   - Navigate to the Quick Loan Platform website.
+   - Complete the multi-step form provided. This form will capture all necessary details about your business and the loan you are requesting.
+
+2. **Submit the Application:**
+   - After filling out the form and ensuring all data is correct (the frontend will perform client-side validation), submit the application. The frontend communicates this data to the backend API.
+
+3. **Backend Processing:**
+   - The backend will perform additional validations, process your application, and execute the decisioning logic to determine if the loan can be approved.
+
+To find the status of your application:
+
+- **Check Application Status:**
+  - After submission, you can check the status of your application directly on the platform. The frontend will either poll or query the backend to retrieve updates on the status of your application, which includes any decision outcomes stored in the PostgreSQL database.
+
+This process ensures that you are kept informed about the progress of your application from submission to final decision.
+----------------------------------------------------------------------------------------------------
+Question: Generate sql query to get application status by user email
+Answer: Based on the information retrieved from the database, the application status is stored in the `loan_applications` table under the `status` field, and the user email is stored in the `applicants` table under the `email` field.
+
+To generate an SQL query to retrieve the application status by user email, you would typically need to join these tables if they are related. Assuming there is a relationship between these tables (like a foreign key from `loan_applications` to `applicants`), the SQL query might look like this:
+
+```sql
+SELECT la.status
+FROM loan_applications la
+JOIN applicants a ON la.applicant_id = a.id
+WHERE a.email = 'user@example.com';
+```
+
+This query joins the `loan_applications` table with the `applicants` table on their respective IDs (assuming `applicant_id` is the linking field), and filters for the specific email address to retrieve the application status. Adjust the field names if they differ in the actual database schema.
+----------------------------------------------------------------------------------------------------
