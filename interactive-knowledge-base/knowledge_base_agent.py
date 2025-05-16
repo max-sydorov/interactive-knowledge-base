@@ -20,7 +20,9 @@ For database-related questions, it delegates to the DatabaseAgent.
 """
 class KnowledgeBaseAgent:
 
-    def __init__(self):
+    def __init__(self, verbose: bool = False):
+        self.verbose = verbose
+
         # Load the system overview
         self.system_overview = self._load_system_overview(SYSTEM_OVERVIEW_PATH)
 
@@ -64,7 +66,7 @@ class KnowledgeBaseAgent:
         self.agent_executor = AgentExecutor(
             agent=self.agent,
             tools=self.tools,
-            verbose=False,
+            verbose=verbose,
             handle_parsing_errors=True
         )
 
@@ -88,7 +90,7 @@ class KnowledgeBaseAgent:
 
 if __name__ == "__main__":
     # Example usage
-    agent = KnowledgeBaseAgent()
+    agent = KnowledgeBaseAgent(verbose = True)
 
     # Example questions
     questions = [
