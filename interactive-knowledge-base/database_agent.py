@@ -1,7 +1,8 @@
 from pathlib import Path
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
-from langchain.prompts import PromptTemplate
+from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 
 # Load environment variables
@@ -24,22 +25,24 @@ class DatabaseAgent:
         # Initialize the LLM
         self.llm = ChatOpenAI(model=MODEL, temperature=TEMPERATURE)
 
-        # Create the prompt template
-        self.prompt = PromptTemplate(
-            input_variables=["schema", "question"],
-            template="""
-            You are a database expert. You are given a SQL schema and a question about the database.
-            Your task is to answer the question based ONLY on the information in the schema.
-            If the question cannot be answered based on the schema, say so.
+        # Create the prompt template with separate system and user messages
+        system_template = """
+        You are a database expert. You are given a SQL schema and a question about the database.
+        Your task is to answer the question based ONLY on the information in the schema.
+        If the question cannot be answered based on the schema, say so.
 
-            Schema:
-            {schema}
+        Schema:
+        {schema}
+        """
 
-            Question: {question}
+        human_template = """
+        Question: {question}
+        """
 
-            Answer:
-            """
-        )
+        self.prompt = ChatPromptTemplate.from_messages([
+            ("system", system_template),
+            ("human", human_template)
+        ])
 
         # Create the chain using the newer RunnableSequence approach
         self.chain = (
