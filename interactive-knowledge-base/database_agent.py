@@ -66,12 +66,11 @@ if __name__ == "__main__":
 
     # Example questions
     questions = [
-        "How to submit an application? Where to find the status of an application?",
+        "What tables do we have in the database?",
+        "What fields do we have in an application?",
         "Where do we persist application data?",
-        "How are loan applications related to applicants?",
         "Can a business have multiple loan applications?",
         "How to submit an application? Where to find the status of an application?",
-        "Where do we persist application data?",
         "Generate sql query to get application status by user email",
     ]
 

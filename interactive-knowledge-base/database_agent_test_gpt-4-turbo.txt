@@ -1,39 +1,36 @@
-Question: How to submit an application? Where to find the status of an application?
-Answer: Based on the provided schema, there is no direct information on how to submit a loan application as it pertains to the user interface or application process steps. The schema primarily defines the structure of the database and the relationships between tables.
+Question: What tables do we have in the database?
+Answer: The database contains the following tables:
+1. `applicants`
+2. `businesses`
+3. `loan_applications`
+----------------------------------------------------------------------------------------------------
+Question: What fields do we have in an application?
+Answer: Based on the schema provided, the fields in the `loan_applications` table, which represents an application, are:
 
-To find the status of an application, you would look at the `status` column in the `loan_applications` table. This column indicates the current status of a loan application and can have values such as 'PENDING', 'APPROVED', 'DECLINED', or 'NEEDS_REVIEW'.
+1. `id` - UUID, primary key, uniquely identifies each loan application.
+2. `applicant_id` - UUID, foreign key reference to the `applicants` table.
+3. `business_id` - UUID, foreign key reference to the `businesses` table.
+4. `loan_amount` - Numeric, the amount of the loan requested.
+5. `loan_purpose` - Text, the purpose for which the loan is requested.
+6. `status` - Varchar, the status of the loan application (can be 'PENDING', 'APPROVED', 'DECLINED', 'NEEDS_REVIEW').
+7. `submitted_at` - Timestamp with time zone, the date and time when the loan application was submitted.
 ----------------------------------------------------------------------------------------------------
 Question: Where do we persist application data?
-Answer: The application data is persisted in the following tables within the database schema provided:
-
-1. **applicants**: This table stores data related to individuals applying for loans. It includes fields such as first name, last name, email, phone, social security number (ssn), street address, city, state, zip code, and the timestamp when the record was created.
-
-2. **businesses**: This table holds information about businesses associated with the loan applications. It includes fields such as business name, Employer Identification Number (ein), street address, city, state, zip code, business type, years in operation, annual revenue, and the timestamp when the record was created.
-
-3. **loan_applications**: This table contains the details of the loan applications themselves. It includes fields such as the ID of the applicant, the ID of the business, the amount of the loan, the purpose of the loan, the status of the application (e.g., PENDING, APPROVED, DECLINED, NEEDS_REVIEW), and the timestamp when the application was submitted.
-
-These tables are designed to store and manage all necessary data related to loan applications, including applicant details, business details, and specific loan application information.
-----------------------------------------------------------------------------------------------------
-Question: How are loan applications related to applicants?
-Answer: Loan applications are related to applicants through a foreign key relationship. In the `loan_applications` table, there is a column named `applicant_id` which is a foreign key referencing the `id` column of the `applicants` table. This relationship indicates that each loan application is associated with one applicant, and the `applicant_id` in the `loan_applications` table identifies the applicant who submitted the loan application.
+Answer: The schema provided does not specify where the application data is persisted in terms of the physical storage details (like which database system or server). It only defines the structure of the data within a database through SQL table definitions for `applicants`, `businesses`, and `loan_applications`. Therefore, based on the schema alone, I cannot answer where the application data is physically stored.
 ----------------------------------------------------------------------------------------------------
 Question: Can a business have multiple loan applications?
-Answer: Yes, a business can have multiple loan applications. The schema does not restrict the number of loan applications a business can have. Each loan application is identified by a unique `id` in the `loan_applications` table and is linked to a business through the `business_id` foreign key. There is no constraint in the schema that limits each business to only one loan application. Multiple entries in the `loan_applications` table can reference the same `business_id`.
+Answer: Yes, a business can have multiple loan applications. The schema does not restrict the number of loan applications a business can have. Each loan application is identified by a unique `id` and references a `business_id` from the `businesses` table. There is no constraint in the `loan_applications` table that limits each business to only one loan application. Multiple entries in the `loan_applications` table can reference the same `business_id`.
 ----------------------------------------------------------------------------------------------------
 Question: How to submit an application? Where to find the status of an application?
-Answer: The schema provided does not include any information on how to submit a loan application or where to find the status of an application in terms of a user interface or an application process flow. It only defines the database structure for storing loan applications and their statuses.
+Answer: Based on the schema provided, there is no direct information on how to submit a loan application or where to find the status of an application in terms of a user interface or an application process flow. The schema primarily defines the structure of the database and the relationships between tables.
 
-To submit an application based on the schema, data would need to be inserted into the `loan_applications` table with the necessary fields such as `applicant_id`, `business_id`, `loan_amount`, `loan_purpose`, and optionally setting the `status` if different from the default 'PENDING'.
+However, the schema does indicate where the status of a loan application is stored:
+- The status of a loan application is stored in the `status` column of the `loan_applications` table. This column can have values such as 'PENDING', 'APPROVED', 'DECLINED', or 'NEEDS_REVIEW'.
 
-The status of an application can be found in the `loan_applications` table under the `status` column. This status can be one of the following values: 'PENDING', 'APPROVED', 'DECLINED', 'NEEDS_REVIEW'.
-
-However, the actual process of submitting an application and checking its status (e.g., through a web interface, API, or software application) is not described in the schema and would depend on the implementation of the system using this database.
-----------------------------------------------------------------------------------------------------
-Question: Where do we persist application data?
-Answer: The schema provided does not specify where the application data is persisted, such as the specific database system or the physical storage location. It only defines the structure of the tables and the relationships between them within a database. Therefore, based on the schema alone, it is not possible to determine where the application data is actually stored.
+As for submitting an application, this would typically involve inserting a record into the `loan_applications` table with appropriate values for `applicant_id`, `business_id`, `loan_amount`, `loan_purpose`, and optionally setting the `status` (though it defaults to 'PENDING'). The actual process of submitting an application would likely be handled through a user interface or an API that interacts with the database, but details of that interface or API are not provided in the schema.
 ----------------------------------------------------------------------------------------------------
 Question: Generate sql query to get application status by user email
-Answer: Based on the schema provided, you can retrieve the application status by user email using the following SQL query:
+Answer: Based on the schema provided, you can generate an SQL query to retrieve the application status by user email by joining the `applicants` and `loan_applications` tables. Here is the SQL query:
 
 ```sql
 SELECT la.status
@@ -42,5 +39,5 @@ JOIN applicants a ON la.applicant_id = a.id
 WHERE a.email = 'example@email.com';
 ```
 
-Replace `'example@email.com'` with the actual email address for which you want to check the application status. This query joins the `loan_applications` table with the `applicants` table on the `applicant_id` and filters the results by the specified email address to retrieve the status of the loan applications.
+Replace `'example@email.com'` with the actual email address for which you want to check the application status. This query will return the status of all loan applications associated with the specified email address.
 ----------------------------------------------------------------------------------------------------
