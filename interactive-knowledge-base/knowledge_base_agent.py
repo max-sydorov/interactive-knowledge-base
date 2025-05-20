@@ -13,6 +13,7 @@ load_dotenv()
 
 MODEL = "gpt-4-turbo"
 TEMPERATURE = 0
+TOP_P = 0 # enforces nucleus sampling with no randomness — it’s a stricter form of deterministic generation
 AGENT_PROMPT_PATH = Path(__file__).parent / "knowledge_base_agent_prompt.md"
 
 """
@@ -32,7 +33,7 @@ class KnowledgeBaseAgent:
         self.db_agent = DatabaseAgent()
 
         # Initialize the LLM
-        self.llm = ChatOpenAI(model=MODEL, temperature=TEMPERATURE)
+        self.llm = ChatOpenAI(model=MODEL, temperature=TEMPERATURE, top_p=TOP_P)
 
         # Define the database query tool
         @tool
