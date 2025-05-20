@@ -1,9 +1,10 @@
 from pathlib import Path
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import PromptTemplate
 from langchain.agents import tool
-from langchain.agents import AgentExecutor, create_openai_tools_agent
+from langchain.agents import AgentExecutor
+from langchain.agents.react.agent import create_react_agent
 from database_agent import DatabaseAgent
 
 # Load environment variables
@@ -41,7 +42,7 @@ class KnowledgeBaseAgent:
         self.tools = [query_database]
 
         # Create the system message with the system overview directly included
-        system_message = f"""
+        self.system_message = f"""
         You are a knowledge base assistant for the Quick Loan Platform. Your task is to answer questions about the platform
         based on the system overview provided below.
 
@@ -59,22 +60,62 @@ class KnowledgeBaseAgent:
         4. If, after consulting the overview and attempting to use the `query_database` tool (if applicable), you still don't know the answer, say so.
         """
 
-        # Create the prompt template with the system message and user input
-        self.prompt = ChatPromptTemplate.from_messages([
-            ("system", system_message),
-            ("human", "{input}"),
-            ("human", "{agent_scratchpad}")
-        ])
+        # Create a prompt template for the ReAct agent
+        self.react_prompt = PromptTemplate.from_template(
+            """
+            You are a knowledge base assistant for the Quick Loan Platform. Your task is to answer questions about the platform
+            based on the system overview provided below.
+    
+            {system_overview}
 
-        # Create an agent with tools
-        self.agent = create_openai_tools_agent(self.llm, self.tools, self.prompt)
+            TOOLS:
+            ------
+            You have access to the following tools:
 
-        # Create an agent executor with a partial to include system_overview
+            {tools}
+
+            The available tool names are: {tool_names}
+
+            To use a tool, please use the following format:
+            ```
+            Thought: I need to use a tool to help me answer the question.
+            Action: tool_name
+            Action Input: input for the tool
+            ```
+
+            The tool will respond with:
+            ```
+            Observation: tool response
+            ```
+
+            After using a tool or if you don't need to use a tool, you MUST respond with:
+            ```
+            Thought: I know the answer now.
+            Final Answer: your final answer here
+            ```
+
+            Begin!
+
+            Question: {input}
+            {agent_scratchpad}
+            """
+        )
+
+        # Create a ReAct agent with tools
+        self.agent = create_react_agent(
+            llm=self.llm,
+            tools=self.tools,
+            prompt=self.react_prompt
+        )
+
+        # Create an agent executor
         self.agent_executor = AgentExecutor(
             agent=self.agent,
             tools=self.tools,
             verbose=verbose,
-            handle_parsing_errors=True
+            handle_parsing_errors=True,
+            max_iterations=10,  # Limit the number of iterations to prevent infinite loops
+            max_execution_time=60  # Limit execution time to 60 seconds
         )
 
     def _load_system_overview(self, system_overview_path):
@@ -88,6 +129,7 @@ class KnowledgeBaseAgent:
     def query(self, question):
         # Use the agent executor to run the agent with the question
         response = self.agent_executor.invoke({
+            "system_overview": self.system_overview,
             "input": question
         })
 
