@@ -6,6 +6,7 @@ from langchain.agents import tool
 from langchain.agents import AgentExecutor
 from langchain.agents.react.agent import create_react_agent
 from database_agent import DatabaseAgent
+from utils.formatted_stdout_handler import FormattedStdOutCallbackHandler
 
 # Load environment variables
 load_dotenv()
@@ -65,7 +66,7 @@ class KnowledgeBaseAgent:
             """
             You are a knowledge base assistant for the Quick Loan Platform. Your task is to answer questions about the platform
             based on the system overview provided below.
-    
+
             {system_overview}
 
             TOOLS:
@@ -108,14 +109,16 @@ class KnowledgeBaseAgent:
             prompt=self.react_prompt
         )
 
-        # Create an agent executor
+        # Create an agent executor with custom callback handler for better log formatting
+        callbacks = [FormattedStdOutCallbackHandler()] if verbose else []
         self.agent_executor = AgentExecutor(
             agent=self.agent,
             tools=self.tools,
             verbose=verbose,
             handle_parsing_errors=True,
             max_iterations=10,  # Limit the number of iterations to prevent infinite loops
-            max_execution_time=60  # Limit execution time to 60 seconds
+            max_execution_time=60,  # Limit execution time to 60 seconds
+            callbacks=callbacks
         )
 
     def _load_system_overview(self, system_overview_path):
@@ -139,7 +142,7 @@ class KnowledgeBaseAgent:
 
 if __name__ == "__main__":
     # Example usage
-    agent = KnowledgeBaseAgent(verbose = False)
+    agent = KnowledgeBaseAgent(verbose = True)
 
     # Example questions
     questions = [
