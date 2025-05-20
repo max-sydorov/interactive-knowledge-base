@@ -29,20 +29,19 @@ The available tool names are: {tool_names}
 
 # RESPONSE RULES
 First, consider whether you can enhance the quality of your answer by utilizing any available tools.
-To use a tool, please use the following format:
+
+# INPUT FORMAT
+```
+Question: the input question you must answer
+```
+
+# RESPONSE FORMAT
 ```
 Thought: I need to use a tool to help me answer the question.
 Action: tool_name
 Action Input: input for the tool
-```
-
-The tool will respond with:
-```
 Observation: tool response
-```
-
-After using a tool or if you don't need to use a tool, you MUST respond with:
-```
+... (this Thought/Action/Action Input/Observation can repeat N times)
 Thought: I know the answer now.
 Final Answer: your final answer here
 ```
