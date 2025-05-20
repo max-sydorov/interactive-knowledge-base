@@ -27,6 +27,8 @@ You have access to the following tools:
 
 The available tool names are: {tool_names}
 
+# RESPONSE RULES
+First, consider whether you can enhance the quality of your answer by utilizing any available tools.
 To use a tool, please use the following format:
 ```
 Thought: I need to use a tool to help me answer the question.
