@@ -13,7 +13,7 @@ load_dotenv()
 
 MODEL = "gpt-4-turbo"
 TEMPERATURE = 0
-SYSTEM_OVERVIEW_PATH = Path(__file__).parent / "system-overview.md"
+AGENT_PROMPT_PATH = Path(__file__).parent / "knowledge_base_agent_prompt.md"
 
 """
 Knowledge Base Agent for answering questions about the Quick Loan Platform.
@@ -25,8 +25,8 @@ class KnowledgeBaseAgent:
     def __init__(self, verbose: bool = False):
         self.verbose = verbose
 
-        # Load the system overview
-        self.system_overview = self._load_system_overview(SYSTEM_OVERVIEW_PATH)
+        # Load the agent prompt
+        self.agent_prompt = self._load_agent_prompt(AGENT_PROMPT_PATH)
 
         # Initialize the DatabaseAgent
         self.db_agent = DatabaseAgent()
@@ -42,65 +42,8 @@ class KnowledgeBaseAgent:
 
         self.tools = [query_database]
 
-        # Create the system message with the system overview directly included
-        self.system_message = f"""
-        You are a knowledge base assistant for the Quick Loan Platform. Your task is to answer questions about the platform
-        based on the system overview provided below.
-
-        {self.system_overview}
-
-        When answering questions:
-        1. First, try to answer using ONLY the system overview.
-        2. If the system overview does not provide a sufficiently detailed or definitive answer, AND the question pertains to:
-            a. Database schema, tables, or fields.
-            b. Specific data values, counts, or existence of records (e.g., "How many active loans?", "Does customer X have a loan?", "Can a business have multiple loan applications?").
-            c. How different pieces of information are linked or structured within the system.
-            d. SQL queries.
-           Then, you MUST use the `query_database` tool to find the answer.
-        3. Provide the answer based on the information retrieved. Do not speculate if the database can provide a factual answer.
-        4. If, after consulting the overview and attempting to use the `query_database` tool (if applicable), you still don't know the answer, say so.
-        """
-
-        # Create a prompt template for the ReAct agent
-        self.react_prompt = PromptTemplate.from_template(
-            """
-            You are a knowledge base assistant for the Quick Loan Platform. Your task is to answer questions about the platform
-            based on the system overview provided below.
-
-            {system_overview}
-
-            TOOLS:
-            ------
-            You have access to the following tools:
-
-            {tools}
-
-            The available tool names are: {tool_names}
-
-            To use a tool, please use the following format:
-            ```
-            Thought: I need to use a tool to help me answer the question.
-            Action: tool_name
-            Action Input: input for the tool
-            ```
-
-            The tool will respond with:
-            ```
-            Observation: tool response
-            ```
-
-            After using a tool or if you don't need to use a tool, you MUST respond with:
-            ```
-            Thought: I know the answer now.
-            Final Answer: your final answer here
-            ```
-
-            Begin!
-
-            Question: {input}
-            {agent_scratchpad}
-            """
-        )
+        # Create a prompt template for the ReAct agent using the loaded prompt
+        self.react_prompt = PromptTemplate.from_template(self.agent_prompt)
 
         # Create a ReAct agent with tools
         self.agent = create_react_agent(
@@ -121,18 +64,16 @@ class KnowledgeBaseAgent:
             callbacks=callbacks
         )
 
-    def _load_system_overview(self, system_overview_path):
-        with open(system_overview_path, 'r') as f:
-            # Escape curly braces to prevent them from being interpreted as variables
-            content = f.read()
-            # Replace { with {{ and } with }} to escape them
-            content = content.replace('{', '{{').replace('}', '}}')
-            return content
+
+    def _load_agent_prompt(self, agent_prompt_path):
+        with open(agent_prompt_path, 'r') as f:
+            # Read the content without escaping curly braces
+            # since we want to keep the template variables
+            return f.read()
 
     def query(self, question):
         # Use the agent executor to run the agent with the question
         response = self.agent_executor.invoke({
-            "system_overview": self.system_overview,
             "input": question
         })
 
