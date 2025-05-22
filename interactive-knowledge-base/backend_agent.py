@@ -1,9 +1,7 @@
 from pathlib import Path
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnablePassthrough
 from llama_index.core import SimpleDirectoryReader, VectorStoreIndex, Settings
+from llama_index.core.prompts import PromptTemplate
 from llama_index.llms.openai import OpenAI
 from llama_index.embeddings.openai import OpenAIEmbedding
 
@@ -17,14 +15,11 @@ JAVA_FILES_PATH = Path(__file__).parent.parent / "quick-loan-platform" / "loan-a
 """
 Backend Agent for answering questions about the loan application service.
 This agent uses LlamaIndex to retrieve relevant information from Java files
-and LangChain with OpenAI to provide answers based on the retrieved context.
+and to provide answers based on the retrieved context.
 """
 class BackendAgent:
 
     def __init__(self):
-        # Initialize the LLM
-        self.llm = ChatOpenAI(model=MODEL, temperature=TEMPERATURE)
-
         # Set up LlamaIndex
         Settings.llm = OpenAI(model=MODEL, temperature=TEMPERATURE)
         Settings.embed_model = OpenAIEmbedding()
@@ -32,31 +27,25 @@ class BackendAgent:
         # Load and index Java files
         self.index = self._create_vector_index(JAVA_FILES_PATH)
 
-        # Create the prompt template with separate system and user messages
-        system_template = """
+        # Create the prompt template for the query engine
+        qa_template = """
         You are a backend expert specializing in the loan application service. 
         You are given a question about the loan application service and relevant code snippets from the service.
         Your task is to answer the question based ONLY on the information in the provided context.
         If the question cannot be answered based on the context, say so.
 
         Context:
-        {context}
+        {context_str}
+
+        Question: {query_str}
         """
 
-        human_template = """
-        Question: {question}
-        """
+        self.qa_prompt = PromptTemplate(qa_template)
 
-        self.prompt = ChatPromptTemplate.from_messages([
-            ("system", system_template),
-            ("human", human_template)
-        ])
-
-        # Create the chain using the newer RunnableSequence approach
-        self.chain = (
-            {"context": lambda x: self._retrieve_context(x), "question": RunnablePassthrough()}
-            | self.prompt
-            | self.llm
+        # Create a custom query engine with our prompt
+        self.query_engine = self.index.as_query_engine(
+            similarity_top_k=10,
+            # text_qa_template=self.qa_prompt
         )
 
     def _create_vector_index(self, directory_path):
@@ -72,20 +61,12 @@ class BackendAgent:
         # Create vector index
         return VectorStoreIndex.from_documents(documents)
 
-    def _retrieve_context(self, question):
-        """
-        Retrieve relevant context from the vector index based on the question.
-        """
-        query_engine = self.index.as_query_engine(similarity_top_k=10)
-        response = query_engine.query(question)
-        return response.response
-
     def query(self, question):
         """
         Answer a question about the loan application service.
         """
-        response = self.chain.invoke(question)
-        return response.content
+        response = self.query_engine.query(question)
+        return response.response
 
 
 if __name__ == "__main__":
