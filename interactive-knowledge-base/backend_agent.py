@@ -99,14 +99,9 @@ if __name__ == "__main__":
         "What APIs do we have? What are their payloads in json format?",
         "How does our application submission process work?",
         "What application decline rules do we have?",
-        "Why application can be declined?",
         "What application fields do we ask?",
-        "When a merchant submits an application, explain the flow of how it goes into the database",
-        "How does the loan application process work?",
         "What are the main components of the loan application service?",
         "How is user data validated in the application?",
-        "What happens when a loan application is submitted?",
-        "How are loan application statuses tracked?",
     ]
 
     # Print answers to example questions

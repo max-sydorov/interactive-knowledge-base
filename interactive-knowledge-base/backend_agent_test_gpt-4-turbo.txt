@@ -110,9 +110,6 @@ Answer: The application decline rules for the loan application service are:
 
 Applications that do not meet these criteria but fail to meet other specific approval criteria are marked for review or further consideration.
 ----------------------------------------------------------------------------------------------------
-Question: Why application can be declined?
-Answer: An application can be declined if the business's annual revenue is less than $50,000 or if the business has been in operation for less than one year. These criteria are used to assess the financial stability and established nature of the business, which are important factors in determining the risk associated with lending.
-----------------------------------------------------------------------------------------------------
 Question: What application fields do we ask?
 Answer: The application fields requested for the loan application service are categorized into three main sections:
 
@@ -143,50 +140,6 @@ Answer: The application fields requested for the loan application service are ca
    - Loan Purpose
 
 These fields are collected during the loan application process to gather necessary information about the applicant, their business, and the specifics of the loan they are requesting.
-----------------------------------------------------------------------------------------------------
-Question: When a merchant submits an application, explain the flow of how it goes into the database
-Answer: When a merchant submits a loan application through the system, the process of storing the application in the database involves several key steps:
-
-1. **Receiving the Application**: The merchant submits the loan application data as a POST request to the `/api/applications` endpoint. The data is encapsulated in a `LoanApplicationDTO` object, which includes details about the applicant, the business, and the loan being requested.
-
-2. **Validation**: Upon receiving the data, the system performs validation checks to ensure that all required fields are present and correctly formatted. This is enforced by annotations such as `@Valid`, `@NotNull`, and others within the `LoanApplicationDTO` class.
-
-3. **Service Layer Processing**: After validation, the data is passed to the `ApplicationService` class. The `submitApplication` method is invoked with the `LoanApplicationDTO` as a parameter.
-
-4. **Data Mapping**: Within the `submitApplication` method, the `DtoMapperService` is used to convert the `LoanApplicationDTO` into entity objects suitable for database storage. The `applicant` and `business` details from the DTO are transformed into `Applicant` and `Business` entity objects.
-
-5. **Creating Loan Application Entity**: A new `LoanApplication` entity is created and populated with the mapped `Applicant` and `Business` entities, as well as the loan amount and purpose extracted from the DTO. The submission time is set to the current time.
-
-6. **Determining Loan Status**: The system determines the status of the loan (e.g., APPROVED, DECLINED, NEEDS_REVIEW) based on business logic that considers factors such as the business's annual revenue, years in operation, and the requested loan amount.
-
-7. **Database Persistence**: The fully populated `LoanApplication` entity, including its status and associated `Applicant` and `Business` entities, is saved to the database using the `LoanApplicationRepository`, which extends `JpaRepository`. The save operation is transactional, ensuring that all associated entities are persisted atomically. The cascade settings (`CascadeType.PERSIST`) ensure that saving the `LoanApplication` entity also triggers the saving of the new `Applicant` and `Business` entities if they are new records.
-
-8. **Response Generation**: After the loan application is successfully saved, the method returns a `SubmissionResponseDTO` containing the ID of the newly created loan application record. This ID is generated automatically by the database when the record is created.
-
-9. **Sending the Response**: Finally, the service sends back an HTTP response with a status of 201 (Created), including the `SubmissionResponseDTO` in the response body, which contains the unique identifier of the submitted loan application.
-
-This flow ensures that the application data submitted by the merchant is validated, processed, and stored securely and efficiently in the database, with appropriate status determination and transactional integrity.
-----------------------------------------------------------------------------------------------------
-Question: How does the loan application process work?
-Answer: The loan application process in the system involves several structured steps, as outlined below:
-
-1. **Receiving the Application**: The process starts when a client submits a loan application through the `ApplicationController`. The `submitApplication` method of this controller receives a `LoanApplicationDTO`, which contains all necessary details about the applicant, the business, and the requested loan.
-
-2. **Validation**: The application data is automatically validated using annotations like `@Valid` to ensure that all required fields are present and correctly formatted before further processing.
-
-3. **Mapping DTO to Entity**: Within the `ApplicationService`, the `submitApplication` method uses the `DtoMapperService` to convert the `LoanApplicationDTO` and its nested `ApplicantDTO` and `BusinessDTO` into their corresponding entity classes (`Applicant`, `Business`, and `LoanApplication`).
-
-4. **Setting Additional Attributes**: Attributes such as the submission time (`submittedAt`) are set to the current time in the `LoanApplication` entity.
-
-5. **Evaluating Loan Application**: The service evaluates the application to decide whether to approve, decline, or mark it for review based on factors like the business's annual revenue, years in operation, and the requested loan amount. The loan status is set accordingly.
-
-6. **Persisting the Application**: The fully populated `LoanApplication` entity, along with its associated `Applicant` and `Business` entities, are saved to the database. The cascade settings on the entity relationships ensure that saving the `LoanApplication` also persists the related `Applicant` and `Business`.
-
-7. **Returning the Response**: After the application is saved, a `SubmissionResponseDTO` containing the ID of the newly created loan application is returned. This ID can be used by the client to reference the application in future queries.
-
-8. **Retrieving Application Data**: The system provides a method to retrieve the details of a submitted application through the `getApplication` method in the `ApplicationService`. This method fetches the application details from the database using the application ID, maps the entity back to a DTO, and returns it.
-
-This comprehensive process ensures that each loan application is handled systematically from submission through validation, evaluation, persistence, and retrieval.
 ----------------------------------------------------------------------------------------------------
 Question: What are the main components of the loan application service?
 Answer: The main components of the loan application service include:
@@ -239,22 +192,4 @@ Answer: User data in the loan application service is validated using annotations
 6. **Positive**: The `amount` field in `LoanDetailsDTO` is validated with the `@Positive` annotation to ensure that the loan amount specified is greater than zero.
 
 These validations are automatically triggered when the corresponding DTOs are used in controller methods, such as in the `submitApplication` method of `ApplicationController`, where the `@Valid` annotation is used to initiate these validations when a loan application is submitted. If any of the constraints are violated, the application responds with validation error messages, preventing the processing of invalid data.
-----------------------------------------------------------------------------------------------------
-Question: What happens when a loan application is submitted?
-Answer: When a loan application is submitted, the following steps occur:
-
-1. **DTO to Entity Conversion**: The loan application data, received as a `LoanApplicationDTO`, is converted into entity objects (`Applicant`, `Business`, and `LoanApplication`) using a mapping service.
-
-2. **Loan Application Creation**: A new `LoanApplication` entity is created and populated with the applicant and business details, loan amount, loan purpose, and the current submission time.
-
-3. **Loan Status Determination**: The system evaluates the business's annual revenue and years in operation against predefined criteria to determine the loan status. If the business's revenue is less than $50,000 or it has been in operation for less than a year, the loan is declined. If the revenue is at least $200,000, the business has been operational for three or more years, and the loan amount is no more than 50% of the revenue, the loan is approved. Otherwise, the loan status is set to 'needs review'.
-
-4. **Database Transaction**: The `LoanApplication` entity, along with its associated `Applicant` and `Business` entities, is saved to the database. This operation is transactional to ensure that all data is saved consistently.
-
-5. **Response Generation**: A `SubmissionResponseDTO` containing the ID of the newly created loan application is generated and returned.
-
-This systematic process ensures that each application is evaluated and recorded appropriately, with a clear determination of loan status and reliable data persistence.
-----------------------------------------------------------------------------------------------------
-Question: How are loan application statuses tracked?
-Answer: Loan application statuses are tracked using an enumeration called `LoanStatus`, which defines the possible states of a loan application as `PENDING`, `APPROVED`, `DECLINED`, and `NEEDS_REVIEW`. This enumeration is utilized within the `LoanApplication` entity to represent the status of each loan application. The status is stored in the database as a string, as indicated by the use of the `@Enumerated(EnumType.STRING)` annotation on the `status` field in the `LoanApplication` entity. This ensures that the status of each loan application is clearly defined and managed consistently throughout the application's lifecycle.
 ----------------------------------------------------------------------------------------------------
