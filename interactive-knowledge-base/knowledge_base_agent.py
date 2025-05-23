@@ -99,13 +99,19 @@ if __name__ == "__main__":
     # Example questions
     questions = [
         "What is the Quick Loan Platform?",
-        "How does the application process work?",
-        "What tables do we have in the database?",
-        "Can a business have multiple loan applications?",
-        "How to submit an application? Where to find the status of an application?",
+        "How does our application submission process work?",
+        "What tables do we have in the database? Provide columns and types for each table.",
         "Generate sql query to get application status by user email",
-        "What APIs do we have in the backend service?",
-        "How is user data validated in the backend application?",
+        "Can a business have multiple loan applications?",
+        "Where to find the status of an application?",
+        "What APIs do we have? Provide url, request and response payloads in json format.",
+        "What application decline rules do we have?",
+        "What application fields do we ask?",
+        "How is user data validated in the application?",
+        "What pages do we have on UI?",
+        "What is the status of an application for Max Sydorov?",
+        "Why an application for Max Sydorov was declined?",
+        "Generate a test plan to test the decline flow",
     ]
 
     # Print answers to example questions

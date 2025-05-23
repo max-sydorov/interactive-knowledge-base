@@ -28,7 +28,11 @@ You have access to the following tools:
 The available tool names are: {tool_names}
 
 # RESPONSE RULES
-First, consider whether you can enhance the quality of your answer by utilizing any available tools. Repeat if necessary.
+First, consider whether you can enhance the quality of your answer by utilizing any available tools.
+If the context of the question is not obvious, use all possible tools to provide the answer for multiple contexts.
+Repeat if necessary.
+If the question cannot be answered based on the context, say so.
+
 
 # INPUT FORMAT
 ```
