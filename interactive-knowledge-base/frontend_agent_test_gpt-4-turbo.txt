@@ -1,0 +1,99 @@
+Question: What pages do we have on UI? Provide content of each page.
+Answer: The user interface includes the following pages:
+
+1. **Index Page**:
+   - Displays a header with the title "Quick Loan" and a subtitle "Small Business Loan Application."
+   - Contains a main section where users can apply for a business loan. This section includes a form for loan application, which is structured into multiple steps: personal information, business information, loan details, and a review and submit section.
+   - The footer includes copyright information, links to Privacy Policy, Terms of Service, and Contact Us.
+
+2. **Status Page**:
+   - Allows users to check the status of their loan application using an application ID.
+   - Displays different statuses such as "APPROVED," "DECLINED," "NEEDS_REVIEW," and "PENDING," each with specific messages and icons.
+   - Provides detailed information about the application, including formatted date and currency values.
+   - Shows error messages or a loading indicator when the application data is being fetched or if an error occurs.
+
+3. **NotFound Page**:
+   - This is a catch-all page for any undefined routes.
+   - Displays a "404" error message indicating that the page is not found.
+   - Offers a link to return to the home page.
+
+These pages are structured to provide a comprehensive user experience for applying and tracking business loans, as well as handling navigation errors within the site.
+----------------------------------------------------------------------------------------------------
+Question: How is the application form structured? Provide a list of all fields used there.
+Answer: The application form is structured into several sections, each corresponding to different aspects of the loan application process. Here are the fields used in each section:
+
+**Personal Information:**
+- First Name
+- Last Name
+- Email
+- Phone
+- Social Security Number (SSN)
+- Street Address
+- City
+- State
+- Zip Code
+
+**Business Information:**
+- Business Name
+- Employer Identification Number (EIN)
+- Business Type (e.g., Sole Proprietorship, Partnership, LLC, Corporation, S Corporation, Nonprofit Organization)
+- Years in Operation
+- Annual Revenue
+- Business Address (Street, City, State, Zip Code)
+
+**Loan Details:**
+- Loan Amount
+- Loan Purpose
+
+These fields are collected through various forms as the user progresses through the application steps, starting with personal information, followed by business details, and finally, the specific loan details. Each section includes validation and formatting to ensure the data is entered correctly.
+----------------------------------------------------------------------------------------------------
+Question: How is user data validated in the application?
+Answer: User data in the application is validated through a series of functions that check the input fields for various conditions. These validations include checking if fields are empty, if they meet specific format requirements, and if numerical values fall within acceptable ranges. For example:
+
+1. **Applicant Validation**:
+   - Fields such as first name, last name, email, phone, SSN, street address, city, state, and zip code are checked to ensure they are not empty.
+   - Email addresses are validated against a standard email format.
+   - Phone numbers are validated to ensure they contain exactly 10 digits.
+   - Social Security Numbers (SSN) are checked to ensure they contain exactly 9 digits.
+   - State codes are validated to ensure they use a 2-letter code.
+   - Zip codes are validated for correct formatting.
+
+2. **Business Validation**:
+   - Business name, Employer Identification Number (EIN), street address, city, state, and zip code are validated for non-emptiness.
+   - EIN is checked to ensure it contains exactly 9 digits.
+   - State codes are validated for a 2-letter format.
+   - Zip codes are checked for correct formatting.
+   - Business type and years in operation are required, with years in operation needing to be greater than zero and less than or equal to 100.
+   - Annual revenue must be greater than zero.
+
+3. **Loan Details Validation**:
+   - Loan amount is checked to ensure it is greater than zero and does not exceed $5,000,000.
+   - Loan purpose is required and must be detailed enough (at least 10 characters long).
+
+These validations help ensure that the data entered into the system is accurate and meets the application's requirements before being processed or submitted.
+----------------------------------------------------------------------------------------------------
+Question: What API calls does the frontend make?
+Answer: The frontend makes two primary API calls:
+
+1. **POST /applications**: This API call is used to submit a loan application. It sends the applicant, business, and loan details as JSON in the request body and expects a response containing an `applicationId`.
+
+2. **GET /applications/{applicationId}**: This API call is used to retrieve a loan application by its ID. It expects the application ID as a path parameter and returns the full details of the loan application if found, or null if not found.
+----------------------------------------------------------------------------------------------------
+Question: How does the UI handle application status updates?
+Answer: The UI handles application status updates by displaying the current status on the StatusPage component. When a user navigates to this page, the application's status is fetched from the backend using the application ID. Depending on the status of the application, different messages and icons are displayed to the user.
+
+1. **Fetching Data**: When the page is loaded, it initially shows a loading spinner with the message "Loading application data..." until the application data is fetched.
+
+2. **Error Handling**: If there is an error in fetching the data or if the application ID does not correspond to an existing application, the UI displays an error message stating "Application Not Found" and provides a link to return to the home page.
+
+3. **Status Display**: Once the application data is successfully fetched, the UI updates to show detailed information about the application status. This includes:
+   - A badge displaying the current status (e.g., "Pending", "Approved", "Declined", "Needs Review").
+   - A message providing more details about the status. For example, if the status is "Approved", the message might say "Your loan application has been approved! Our team will contact you soon with next steps."
+   - An icon corresponding to the status (e.g., a check circle for "Approved", an X circle for "Declined").
+
+4. **Additional Information**: The page also displays other relevant details about the application, such as the applicant's name, business name, loan amount, and submission date.
+
+5. **Assistance Information**: Contact information is provided at the bottom of the page, offering users a way to reach out via email or phone if they have questions about their application.
+
+This approach ensures that users are kept informed about the status of their loan application and can easily access additional support if needed.
+----------------------------------------------------------------------------------------------------
