@@ -27,25 +27,10 @@ class BackendAgent:
         # Load and index Java files
         self.index = self._create_vector_index(JAVA_FILES_PATH)
 
-        # Create the prompt template for the query engine
-        qa_template = """
-        You are a backend expert specializing in the loan application service. 
-        You are given a question about the loan application service and relevant code snippets from the service.
-        Your task is to answer the question based ONLY on the information in the provided context.
-        If the question cannot be answered based on the context, say so.
-
-        Context:
-        {context_str}
-
-        Question: {query_str}
-        """
-
-        self.qa_prompt = PromptTemplate(qa_template)
-
         # Create a custom query engine with our prompt
         self.query_engine = self.index.as_query_engine(
             similarity_top_k=10,
-            # text_qa_template=self.qa_prompt
+            # response_mode="tree_summarize"
         )
 
     def _create_vector_index(self, directory_path):
