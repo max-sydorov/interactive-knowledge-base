@@ -31,6 +31,7 @@ The available tool names are: {tool_names}
 First, consider whether you can enhance the quality of your answer by utilizing any available tools.
 If the context of the question is not obvious, use all possible tools to provide the answer for multiple contexts.
 Repeat if necessary.
+Your task is to answer the question based *ONLY* on the provided context.
 If the question cannot be answered based on the context, say so.
 
 
