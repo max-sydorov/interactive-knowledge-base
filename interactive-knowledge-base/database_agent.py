@@ -9,7 +9,7 @@ load_dotenv()
 
 MODEL = "gpt-4-turbo"
 TEMPERATURE = 0
-SCHEMA_PATH = Path(__file__).parent / "schema.sql"
+SCHEMA_PATH = Path(__file__).parent.parent / "quick-loan-platform" / "db" / "schema.sql"
 
 """
 Database Agent for answering questions about the database schema.

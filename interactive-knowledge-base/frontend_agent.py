@@ -23,6 +23,7 @@ class FrontendAgent:
         # Set up LlamaIndex
         Settings.llm = OpenAI(model=MODEL, temperature=TEMPERATURE)
         Settings.embed_model = OpenAIEmbedding()
+        Settings.context_window = 32000
 
         # Load and index TypeScript files
         self.index = self._create_vector_index(TYPESCRIPT_FILES_PATH)
