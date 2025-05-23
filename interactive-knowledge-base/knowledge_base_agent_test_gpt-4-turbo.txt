@@ -628,6 +628,26 @@ Final Answer: The application decline rules in the decisioning logic are based o
 > Finished chain.
 Answer: The application decline rules in the decisioning logic are based on the annual revenue and years in operation of the business applying for the loan. Specifically, the application will be declined if the business's annual revenue is less than $50,000 or if the business has been in operation for less than one year. These conditions are checked during the loan application process, and if either condition is met, the loan application status is set to DECLINED.
 ----------------------------------------------------------------------------------------------------
+Question: What validation do we have for the Phone field?
+
+
+> Entering new AgentExecutor chain...
+
+
+Thought: I need to use a tool to help me answer the question about validation for the Phone field on the frontend.
+Action: query_frontend
+Action Input: What validation rules are applied to the Phone field in the form?
+
+The Phone field must be provided as it is required. Additionally, it must consist of exactly 10 digits. Any non-digit characters are removed before validating the length.
+
+I know the answer now.
+Final Answer: The Phone field in the form requires the user to input exactly 10 digits. Any non-digit characters entered are automatically removed before the system validates the length.
+
+
+
+> Finished chain.
+Answer: The Phone field in the form requires the user to input exactly 10 digits. Any non-digit characters entered are automatically removed before the system validates the length.
+----------------------------------------------------------------------------------------------------
 Question: How is user data validated in the application?
 
 

@@ -116,6 +116,7 @@ if __name__ == "__main__":
         "Where to find the status of an application?",
         "What APIs do we have? Provide url, request and response payloads in json format.",
         "What application decline rules do we have?",
+        "What validation do we have for the Phone field?"
         "How is user data validated in the application?",
         "What pages do we have on UI? Provide content of each page.",
         "What application fields do we ask?",
