@@ -121,7 +121,7 @@ if __name__ == "__main__":
         "What application fields do we ask?",
         "What is the status of an application for Max Sydorov?",
         "Why an application for Max Sydorov was declined?",
-        "Generate a test plan to test the decline flow",
+        "Generate an e2e test plan to test the declining flow. Provide steps and expected results.",
     ]
 
     # Print answers to example questions
