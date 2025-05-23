@@ -6,6 +6,7 @@ from langchain.agents import tool
 from langchain.agents import AgentExecutor
 from langchain.agents.react.agent import create_react_agent
 from database_agent import DatabaseAgent
+from backend_agent import BackendAgent
 from utils.formatted_stdout_handler import FormattedStdOutCallbackHandler
 
 # Load environment variables
@@ -32,6 +33,9 @@ class KnowledgeBaseAgent:
         # Initialize the DatabaseAgent
         self.db_agent = DatabaseAgent()
 
+        # Initialize the BackendAgent
+        self.backend_agent = BackendAgent()
+
         # Initialize the LLM
         self.llm = ChatOpenAI(model=MODEL, temperature=TEMPERATURE, top_p=TOP_P)
 
@@ -41,7 +45,13 @@ class KnowledgeBaseAgent:
             """Use this tool for any questions related to database schema, tables, fields, or SQL queries."""
             return self.db_agent.query(question)
 
-        self.tools = [query_database]
+        # Define the backend query tool
+        @tool
+        def query_backend(question: str) -> str:
+            """Use this tool for any questions related to the backend service, APIs, application submission process, or Java implementation details."""
+            return self.backend_agent.query(question)
+
+        self.tools = [query_database, query_backend]
 
         # Create a prompt template for the ReAct agent using the loaded prompt
         self.react_prompt = PromptTemplate.from_template(self.agent_prompt)
@@ -94,6 +104,8 @@ if __name__ == "__main__":
         "Can a business have multiple loan applications?",
         "How to submit an application? Where to find the status of an application?",
         "Generate sql query to get application status by user email",
+        "What APIs do we have in the backend service?",
+        "How is user data validated in the backend application?",
     ]
 
     # Print answers to example questions
