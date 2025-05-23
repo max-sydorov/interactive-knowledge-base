@@ -7,6 +7,7 @@ from langchain.agents import AgentExecutor
 from langchain.agents.react.agent import create_react_agent
 from database_agent import DatabaseAgent
 from backend_agent import BackendAgent
+from frontend_agent import FrontendAgent
 from utils.formatted_stdout_handler import FormattedStdOutCallbackHandler
 
 # Load environment variables
@@ -36,6 +37,9 @@ class KnowledgeBaseAgent:
         # Initialize the BackendAgent
         self.backend_agent = BackendAgent()
 
+        # Initialize the FrontendAgent
+        self.frontend_agent = FrontendAgent()
+
         # Initialize the LLM
         self.llm = ChatOpenAI(model=MODEL, temperature=TEMPERATURE, top_p=TOP_P)
 
@@ -51,7 +55,13 @@ class KnowledgeBaseAgent:
             """Use this tool for any questions related to the backend service, APIs, application submission process, or Java implementation details."""
             return self.backend_agent.query(question)
 
-        self.tools = [query_database, query_backend]
+        # Define the frontend query tool
+        @tool
+        def query_frontend(question: str) -> str:
+            """Use this tool for any questions related to the frontend UI, pages, components, forms, validation, or TypeScript implementation details."""
+            return self.frontend_agent.query(question)
+
+        self.tools = [query_database, query_backend, query_frontend]
 
         # Create a prompt template for the ReAct agent using the loaded prompt
         self.react_prompt = PromptTemplate.from_template(self.agent_prompt)
@@ -106,9 +116,9 @@ if __name__ == "__main__":
         "Where to find the status of an application?",
         "What APIs do we have? Provide url, request and response payloads in json format.",
         "What application decline rules do we have?",
-        "What application fields do we ask?",
         "How is user data validated in the application?",
-        "What pages do we have on UI?",
+        "What pages do we have on UI? Provide content of each page.",
+        "What application fields do we ask?",
         "What is the status of an application for Max Sydorov?",
         "Why an application for Max Sydorov was declined?",
         "Generate a test plan to test the decline flow",
