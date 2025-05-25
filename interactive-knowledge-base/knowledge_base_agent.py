@@ -8,6 +8,7 @@ from langchain.agents.react.agent import create_react_agent
 from database_agent import DatabaseAgent
 from backend_agent import BackendAgent
 from frontend_agent import FrontendAgent
+from database_executor import DatabaseExecutor
 from utils.formatted_stdout_handler import FormattedStdOutCallbackHandler
 
 # Load environment variables
@@ -40,6 +41,9 @@ class KnowledgeBaseAgent:
         # Initialize the FrontendAgent
         self.frontend_agent = FrontendAgent()
 
+        # Initialize the DatabaseExecutor
+        self.db_executor = DatabaseExecutor()
+
         # Initialize the LLM
         self.llm = ChatOpenAI(model=MODEL, temperature=TEMPERATURE, top_p=TOP_P)
 
@@ -61,7 +65,14 @@ class KnowledgeBaseAgent:
             """Use this tool for any questions related to the frontend UI, pages, components, forms, validation, or TypeScript implementation details."""
             return self.frontend_agent.query(question)
 
-        self.tools = [query_database, query_backend, query_frontend]
+        # Define the database execution tool
+        @tool
+        def execute_database(query: str) -> str:
+            """Use this tool to execute SQL queries against the PostgreSQL database and get the results. 
+            Provide the SQL query as input. Be careful with destructive operations (DELETE, DROP, etc.)."""
+            return self.db_executor.execute_query(query)
+
+        self.tools = [query_database, query_backend, query_frontend, execute_database]
 
         # Create a prompt template for the ReAct agent using the loaded prompt
         self.react_prompt = PromptTemplate.from_template(self.agent_prompt)
@@ -115,13 +126,12 @@ if __name__ == "__main__":
         "Can a business have multiple loan applications?",
         "Where to find the status of an application?",
         "What APIs do we have? Provide url, request and response payloads in json format.",
-        "What application decline rules do we have?",
         "What validation do we have for the Phone field?"
         "How is user data validated in the application?",
         "What pages do we have on UI? Provide content of each page.",
         "What application fields do we ask?",
-        "What is the status of an application for Max Sydorov?",
-        "Why an application for Max Sydorov was declined?",
+        "What is the status of an application for Wilma Mason?",
+        "Application for Wilma Mason was declined, explain why?",
         "Generate an e2e test plan to test the declining flow. Provide steps and expected results.",
     ]
 
