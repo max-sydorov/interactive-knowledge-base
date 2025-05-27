@@ -126,12 +126,12 @@ if __name__ == "__main__":
         "Can a business have multiple loan applications?",
         "Where to find the status of an application?",
         "What APIs do we have? Provide url, request and response payloads in json format.",
-        "What validation do we have for the Phone field?"
+        "What validation do we have for the Phone field?",
         "How is user data validated in the application?",
         "What pages do we have on UI? Provide content of each page.",
         "What application fields do we ask?",
         "What is the status of an application for Wilma Mason?",
-        "Application for Wilma Mason was declined, explain why?",
+        "Pull application data for Wilma Mason. Understand decline logic. Explain why it was declined?",
         "Generate an e2e test plan to test the declining flow. Provide steps and expected results.",
     ]
 
