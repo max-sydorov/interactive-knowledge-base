@@ -131,8 +131,12 @@ if __name__ == "__main__":
         "What pages do we have on UI? Provide content of each page.",
         "What application fields do we ask?",
         "What is the status of an application for Wilma Mason?",
-        "Pull application data for Wilma Mason. Understand decline logic. Explain why it was declined?",
+        "Understand decline logic on the backend. Find the application id for Wilma Mason. Pull necessary application data by applicaiton id. Explain why it was declined.",
         "Generate an e2e test plan to test the declining flow. Provide steps and expected results.",
+        "Step 1. Get a list of application fields we ask on UI during app intake."
+        "Step 2. Find how UI passes each field value to the backend."
+        "Step 3. Find in which table and column backend persist each field value."
+        "Step 4. Return a list of UI fields mapped to the database table and column."
     ]
 
     # Print answers to example questions
